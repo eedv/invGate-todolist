@@ -3,21 +3,30 @@ import { ChangeEvent, useState } from "react";
 import { TodoItem } from "./TodoItem";
 import { TodoItem as TodoItemType } from "./types/TodoItem";
 import { FilterControl, FilterControlProps } from "./FilterControl";
+import { TodoItemForm } from "./TodoItemForm";
 
 export function TodoList() {
+  const [showForm, setShowForm] = useState(false);
   const [itemList, setItemList] = useState<TodoItemType[]>([]);
   const [filter, setFilter] =
     useState<FilterControlProps["value"]>("incomplete");
 
-  const handleAddItem = () => {
+  const handleCreateItem = (itemValues: TodoItemType) => {
     setItemList((oldList) => [
       ...oldList,
       {
-        title: `Nueva tarea ${oldList.length + 1}`,
-        completed: false,
+        ...itemValues,
         id: oldList.length + 1,
       },
     ]);
+  };
+
+  const handleShowForm = () => {
+    setShowForm(true);
+  };
+
+  const handleHideForm = () => {
+    setShowForm(false);
   };
 
   const handleStatusChange =
@@ -52,10 +61,15 @@ export function TodoList() {
   return (
     <Stack>
       <Group>
-        <Button onClick={handleAddItem}>Agregar</Button>
+        <Button onClick={handleShowForm} disabled={showForm}>
+          Agregar
+        </Button>
         <FilterControl onChange={handleFilterChange} value={filter} />
       </Group>
       {filteredList}
+      {showForm && (
+        <TodoItemForm onSubmit={handleCreateItem} onCancel={handleHideForm} />
+      )}
     </Stack>
   );
 }
