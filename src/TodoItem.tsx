@@ -9,7 +9,7 @@ export interface TodoItemProps {
 
 export function TodoItem({ todoItem, onChange }: TodoItemProps) {
   return (
-    <Paper shadow="sm" p="xl">
+    <Paper shadow="sm" p="xl" radius="lg">
       <Group wrap="nowrap">
         <Checkbox checked={todoItem.completed} size="md" onChange={onChange} />
         <Title order={3} lineClamp={2}>
