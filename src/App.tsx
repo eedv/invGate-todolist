@@ -1,11 +1,14 @@
 import "@mantine/core/styles.css";
 
-import { MantineProvider } from "@mantine/core";
+import { Container, MantineProvider } from "@mantine/core";
+import { TodoList } from "./TodoList";
 
 function App() {
   return (
     <MantineProvider>
-      <div></div>
+      <Container py="md">
+        <TodoList />
+      </Container>
     </MantineProvider>
   );
 }
