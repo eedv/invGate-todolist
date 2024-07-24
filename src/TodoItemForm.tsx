@@ -6,7 +6,7 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { FieldError, FieldErrors, useForm } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import { TodoItem } from "./types/TodoItem";
 
 export interface TodoItemFormProps {
