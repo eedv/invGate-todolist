@@ -39,7 +39,7 @@ export function TodoItemForm({ onSubmit, onCancel }: TodoItemFormProps) {
       return "El campo supera los 256 caracteres permitidos";
     }
   };
-  console.log(errors);
+
   return (
     <Paper shadow="sm" p="lg" radius="lg">
       <Stack component="form" onSubmit={handleSubmit(onSubmit)}>
