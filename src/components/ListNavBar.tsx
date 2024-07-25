@@ -7,14 +7,18 @@ import {
   Title,
 } from "@mantine/core";
 import { NavLink as NavLinkRouter } from "react-router-dom";
-import { useTodoContext } from "./useTodoContext";
+import { useTodoContext } from "../useTodoContext";
 import { IconPlus } from "@tabler/icons-react";
+import { CreateListModal } from "./CreateListModal";
+import { useDisclosure } from "@mantine/hooks";
 
 export function ListNavBar() {
+  const [createNew, { toggle }] = useDisclosure();
   const { lists, addList } = useTodoContext();
 
-  const handleCreateList = () => {
-    addList(`Nueva lista ${lists.length + 1}`);
+  const handleCreateList = ({ name }: { name: string }) => {
+    addList(name);
+    toggle();
   };
 
   return (
@@ -23,7 +27,7 @@ export function ListNavBar() {
         <Group justify="space-between">
           <Title order={4}>Mis listas</Title>
           <ActionIcon
-            onClick={handleCreateList}
+            onClick={toggle}
             variant="light"
             size="lg"
             aria-label="add-list"
@@ -42,6 +46,11 @@ export function ListNavBar() {
           />
         ))}
       </AppShellSection>
+      <CreateListModal
+        opened={createNew}
+        onClose={toggle}
+        onCreate={handleCreateList}
+      />
     </>
   );
 }
