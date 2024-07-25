@@ -68,22 +68,22 @@ export function TodoList() {
         <Group wrap="nowrap">
           <Button
             onClick={updateModal.open}
-            leftSection={<IconEdit size={14} />}
+            leftSection={<IconEdit size={20} />}
           >
-            Editar
+            Editar lista
           </Button>
           <Button
             onClick={deleteModal.open}
             color="red"
-            leftSection={<IconTrash size={14} />}
+            leftSection={<IconTrash size={20} />}
           >
-            Eliminar
+            Eliminar lista
           </Button>
         </Group>
       </Group>
       <Group>
         <Button onClick={handleShowForm} disabled={showForm}>
-          Agregar
+          Agregar tarea
         </Button>
         <FilterControl onChange={handleFilterChange} value={filter} />
       </Group>
