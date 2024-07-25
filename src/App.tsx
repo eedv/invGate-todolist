@@ -1,10 +1,16 @@
 import "@mantine/core/styles.css";
-import { AppShell, Burger, Group, NavLink, Title } from "@mantine/core";
+import { AppShell, Burger, Button, Group, NavLink, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet, NavLink as NavLinkRouter } from "react-router-dom";
+import { useTodoContext } from "./useTodoContext";
 
 export function App() {
+  const { lists, addList } = useTodoContext();
   const [opened, { toggle }] = useDisclosure();
+
+  const handleCreateList = () => {
+    addList(`Nueva lista ${lists.length + 1}`);
+  };
 
   return (
     <AppShell
@@ -23,9 +29,15 @@ export function App() {
         </Group>
       </AppShell.Header>
       <AppShell.Navbar>
-        <NavLink component={NavLinkRouter} to="lists/1" label="lista 1" />
-        <NavLink component={NavLinkRouter} to="lists/2" label="lista 2" />
-        <NavLink component={NavLinkRouter} to="lists/3" label="lista 3" />
+        <Button onClick={handleCreateList}>Crear lista</Button>
+        {lists.map((list) => (
+          <NavLink
+            key={list.id}
+            component={NavLinkRouter}
+            to={`lists/${list.id}`}
+            label={list.name}
+          />
+        ))}
       </AppShell.Navbar>
       <AppShell.Main>
         <Outlet />

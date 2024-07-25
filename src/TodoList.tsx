@@ -1,24 +1,25 @@
-import { Button, Group, Stack } from "@mantine/core";
+import { Button, Group, Stack, Text } from "@mantine/core";
 import { ChangeEvent, useState } from "react";
 import { TodoItem } from "./TodoItem";
-import { TodoItem as TodoItemType } from "./types/TodoItem";
+import { Todo } from "./types/Todo";
 import { FilterControl, FilterControlProps } from "./FilterControl";
 import { TodoItemForm } from "./TodoItemForm";
+import { useParams } from "react-router-dom";
+import { useTodoContext } from "./useTodoContext";
 
 export function TodoList() {
+  const { listId } = useParams();
+  const { lists, addTodo, toggleTodo } = useTodoContext();
   const [showForm, setShowForm] = useState(false);
-  const [itemList, setItemList] = useState<TodoItemType[]>([]);
   const [filter, setFilter] =
     useState<FilterControlProps["value"]>("incomplete");
 
-  const handleCreateItem = (itemValues: TodoItemType) => {
-    setItemList((oldList) => [
-      ...oldList,
-      {
-        ...itemValues,
-        id: oldList.length + 1,
-      },
-    ]);
+  const list = lists.find((l) => l.id === Number(listId));
+
+  if (!list) return <Text>La lista seleccionada no existe</Text>;
+
+  const handleCreateItem = (itemValues: Todo) => {
+    addTodo(list.id, itemValues.title);
   };
 
   const handleShowForm = () => {
@@ -31,18 +32,14 @@ export function TodoList() {
 
   const handleStatusChange =
     (id: number) => (e: ChangeEvent<HTMLInputElement>) => {
-      setItemList((oldList) => {
-        return oldList.map((item) =>
-          item.id === id ? { ...item, completed: e.target.checked } : item
-        );
-      });
+      toggleTodo(list.id, id);
     };
 
   const handleFilterChange = (value: string) => {
     setFilter(value as FilterControlProps["value"]);
   };
 
-  const filteredList = itemList
+  const filteredList = list.todos
     .filter((item) => {
       return (
         (filter === "completed" && item.completed) ||
