@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text } from "@mantine/core";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { TodoItem } from "./TodoItem";
 import { Todo } from "./types/Todo";
 import { FilterControl, FilterControlProps } from "./FilterControl";
@@ -30,10 +30,9 @@ export function TodoList() {
     setShowForm(false);
   };
 
-  const handleStatusChange =
-    (id: number) => (e: ChangeEvent<HTMLInputElement>) => {
-      toggleTodo(list.id, id);
-    };
+  const handleStatusChange = (id: number) => () => {
+    toggleTodo(list.id, id);
+  };
 
   const handleFilterChange = (value: string) => {
     setFilter(value as FilterControlProps["value"]);
