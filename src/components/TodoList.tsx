@@ -1,4 +1,4 @@
-import { Button, Group, Stack, Text } from "@mantine/core";
+import { Button, Group, rem, Stack, Text, Title } from "@mantine/core";
 import { useState } from "react";
 import { TodoItem } from "./TodoItem";
 import { Todo } from "../types/Todo";
@@ -6,10 +6,17 @@ import { FilterControl, FilterControlProps } from "./FilterControl";
 import { TodoItemForm } from "./TodoItemForm";
 import { useParams } from "react-router-dom";
 import { useTodoContext } from "../useTodoContext";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { ConfirmModal } from "./ConfirmModal";
+import { useDisclosure } from "@mantine/hooks";
+import { UpdateListModal } from "./UpdateListModal";
 
 export function TodoList() {
   const { listId } = useParams();
-  const { lists, addTodo, toggleTodo } = useTodoContext();
+  const { lists, deleteList, updateList, addTodo, toggleTodo } =
+    useTodoContext();
+  const [showDeletModal, deleteModal] = useDisclosure();
+  const [showUpdateModal, updateModal] = useDisclosure();
   const [showForm, setShowForm] = useState(false);
   const [filter, setFilter] =
     useState<FilterControlProps["value"]>("incomplete");
@@ -38,6 +45,15 @@ export function TodoList() {
     setFilter(value as FilterControlProps["value"]);
   };
 
+  const handleDeletList = () => {
+    deleteList(list.id);
+  };
+
+  const handleUpdateList = ({ name }: { name: string }) => {
+    updateList(list.id, name);
+    updateModal.close();
+  };
+
   const filteredList = list.todos
     .filter((item) => {
       return (
@@ -56,6 +72,26 @@ export function TodoList() {
 
   return (
     <Stack>
+      <Group justify="space-between" preventGrowOverflow={false}>
+        <Title order={3} lineClamp={1}>
+          {list.name}
+        </Title>
+        <Group wrap="nowrap">
+          <Button
+            onClick={updateModal.open}
+            leftSection={<IconEdit size={14} />}
+          >
+            Editar
+          </Button>
+          <Button
+            onClick={deleteModal.open}
+            color="red"
+            leftSection={<IconTrash size={14} />}
+          >
+            Eliminar
+          </Button>
+        </Group>
+      </Group>
       <Group>
         <Button onClick={handleShowForm} disabled={showForm}>
           Agregar
@@ -66,6 +102,17 @@ export function TodoList() {
       {showForm && (
         <TodoItemForm onSubmit={handleCreateItem} onCancel={handleHideForm} />
       )}
+      <ConfirmModal
+        opened={showDeletModal}
+        onClose={deleteModal.close}
+        onConfirm={handleDeletList}
+      />
+      <UpdateListModal
+        opened={showUpdateModal}
+        onClose={updateModal.close}
+        onUpdate={handleUpdateList}
+        todoList={list}
+      />
     </Stack>
   );
 }
