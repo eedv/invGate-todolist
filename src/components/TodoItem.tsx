@@ -1,33 +1,81 @@
-import { Checkbox, Group, Paper, Title, Tooltip } from "@mantine/core";
+import {
+  ActionIcon,
+  Checkbox,
+  Group,
+  Paper,
+  Title,
+  Tooltip,
+} from "@mantine/core";
 import { Todo } from "../types/Todo";
-import { ChangeEvent } from "react";
+import { IconEdit, IconTrash } from "@tabler/icons-react";
+import { ConfirmModal } from "./ConfirmModal";
+import { useTodoContext } from "../useTodoContext";
+import { useDisclosure } from "@mantine/hooks";
+import { TodoItemForm } from "./TodoItemForm";
 
 export interface TodoItemProps {
   todoItem: Todo;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  listId: number;
 }
 
-export function TodoItem({ todoItem, onChange }: TodoItemProps) {
-  return (
-    <Paper shadow="sm" p="xl" radius="lg">
-      <Group wrap="nowrap">
-        <Tooltip
-          label={
-            todoItem.completed
-              ? "Marcar como incompleta"
-              : "Marcar como completa"
-          }
-        >
-          <Checkbox
-            checked={todoItem.completed}
-            size="md"
-            onChange={onChange}
-          />
-        </Tooltip>
+export function TodoItem({ todoItem, listId }: TodoItemProps) {
+  const { deleteTodo, updateTodo, toggleTodo } = useTodoContext();
+  const [showDeleteConfirm, deleteModal] = useDisclosure();
+  const [showUpdateForm, updateForm] = useDisclosure();
 
-        <Title order={3} lineClamp={2}>
-          {todoItem.title}
-        </Title>
+  const handleUpdate = (todoValues: Todo) => {
+    updateTodo(listId, todoItem.id, todoValues.title);
+    updateForm.close();
+  };
+
+  if (showUpdateForm) {
+    return (
+      <TodoItemForm
+        submitText="Actualizar"
+        onCancel={updateForm.close}
+        defaultValues={todoItem}
+        onSubmit={handleUpdate}
+      />
+    );
+  }
+
+  return (
+    <Paper shadow="sm" p="md" radius="lg">
+      <Group wrap="nowrap" justify="space-between">
+        <Group>
+          <Tooltip
+            label={
+              todoItem.completed
+                ? "Marcar como incompleta"
+                : "Marcar como completa"
+            }
+          >
+            <Checkbox
+              checked={todoItem.completed}
+              size="md"
+              onChange={() => toggleTodo(listId, todoItem.id)}
+            />
+          </Tooltip>
+
+          <Title order={3} lineClamp={2}>
+            {todoItem.title}
+          </Title>
+        </Group>
+        <Group>
+          <ActionIcon variant="subtle" onClick={updateForm.open}>
+            <IconEdit style={{ width: 24, height: 24 }} />
+          </ActionIcon>
+          <ActionIcon variant="subtle" onClick={deleteModal.open}>
+            <IconTrash color="red" style={{ width: 24, height: 24 }} />
+          </ActionIcon>
+          <ConfirmModal
+            opened={showDeleteConfirm}
+            onClose={deleteModal.close}
+            onConfirm={() => deleteTodo(listId, todoItem.id)}
+            confirmLabel="Eliminar"
+            title="Eliminar tarea?"
+          />
+        </Group>
       </Group>
     </Paper>
   );

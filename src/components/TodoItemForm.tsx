@@ -9,25 +9,42 @@ import {
 import { useForm } from "react-hook-form";
 import { Todo } from "../types/Todo";
 import { getErrorMessage } from "../utils/getErrorMessages";
+import { useEffect } from "react";
 
 export interface TodoItemFormProps {
   onSubmit: (todoItem: Todo) => void;
   onCancel: VoidFunction;
+  submitText: string;
+  defaultValues?: Todo;
 }
 
-export function TodoItemForm({ onSubmit, onCancel }: TodoItemFormProps) {
+const defaultItem = {
+  id: 1,
+  completed: false,
+  title: "nombre",
+  description: "",
+};
+
+export function TodoItemForm({
+  onSubmit,
+  onCancel,
+  submitText,
+  defaultValues = defaultItem,
+}: TodoItemFormProps) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    reset,
+    formState: { errors, isSubmitSuccessful },
   } = useForm({
-    defaultValues: {
-      id: 1,
-      completed: false,
-      title: "nombre",
-      description: "",
-    },
+    defaultValues,
   });
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
     <Paper shadow="sm" p="lg" radius="lg">
@@ -47,7 +64,7 @@ export function TodoItemForm({ onSubmit, onCancel }: TodoItemFormProps) {
           <Button onClick={onCancel} variant="outline">
             Cancelar
           </Button>
-          <Button type="submit">Crear</Button>
+          <Button type="submit">{submitText}</Button>
         </Group>
       </Stack>
     </Paper>

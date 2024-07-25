@@ -13,8 +13,7 @@ import { UpdateListModal } from "./UpdateListModal";
 
 export function TodoList() {
   const { listId } = useParams();
-  const { lists, deleteList, updateList, addTodo, toggleTodo } =
-    useTodoContext();
+  const { lists, deleteList, updateList, addTodo } = useTodoContext();
   const [showDeletModal, deleteModal] = useDisclosure();
   const [showUpdateModal, updateModal] = useDisclosure();
   const [showForm, setShowForm] = useState(false);
@@ -35,10 +34,6 @@ export function TodoList() {
 
   const handleHideForm = () => {
     setShowForm(false);
-  };
-
-  const handleStatusChange = (id: number) => () => {
-    toggleTodo(list.id, id);
   };
 
   const handleFilterChange = (value: string) => {
@@ -62,13 +57,7 @@ export function TodoList() {
         filter === "all"
       );
     })
-    .map((item) => (
-      <TodoItem
-        key={item.id}
-        todoItem={item}
-        onChange={handleStatusChange(item.id)}
-      />
-    ));
+    .map((item) => <TodoItem key={item.id} todoItem={item} listId={list.id} />);
 
   return (
     <Stack>
@@ -100,9 +89,14 @@ export function TodoList() {
       </Group>
       {filteredList}
       {showForm && (
-        <TodoItemForm onSubmit={handleCreateItem} onCancel={handleHideForm} />
+        <TodoItemForm
+          onSubmit={handleCreateItem}
+          onCancel={handleHideForm}
+          submitText="Crear"
+        />
       )}
       <ConfirmModal
+        title="Eliminar lista?"
         opened={showDeletModal}
         onClose={deleteModal.close}
         onConfirm={handleDeletList}
