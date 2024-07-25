@@ -1,9 +1,9 @@
 import { Checkbox, Group, Paper, Title, Tooltip } from "@mantine/core";
-import { TodoItem as TodoItemType } from "./types/TodoItem";
+import { Todo } from "./types/Todo";
 import { ChangeEvent } from "react";
 
 export interface TodoItemProps {
-  todoItem: TodoItemType;
+  todoItem: Todo;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 

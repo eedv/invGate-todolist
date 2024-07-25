@@ -7,10 +7,10 @@ import {
   TextInput,
 } from "@mantine/core";
 import { FieldError, useForm } from "react-hook-form";
-import { TodoItem } from "./types/TodoItem";
+import { Todo } from "./types/Todo";
 
 export interface TodoItemFormProps {
-  onSubmit: (todoItem: TodoItem) => void;
+  onSubmit: (todoItem: Todo) => void;
   onCancel: VoidFunction;
 }
 

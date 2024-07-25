@@ -1,5 +1,5 @@
 import { createContext, useReducer, ReactNode } from "react";
-import { TodoItem } from "./types/TodoItem";
+import { Todo } from "./types/Todo";
 
 type TodoAction =
   | { type: "ADD_TODO"; listId: number; title: string }
@@ -11,7 +11,7 @@ type TodoAction =
 type TodoList = {
   id: number;
   name: string;
-  todos: TodoItem[];
+  todos: Todo[];
 };
 
 type TodoState = TodoList[];
