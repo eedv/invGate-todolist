@@ -13,12 +13,12 @@ import { CreateListModal } from "./CreateListModal";
 import { useDisclosure } from "@mantine/hooks";
 
 export function ListNavBar() {
-  const [createNew, { toggle }] = useDisclosure();
+  const [showCreateModal, createModal] = useDisclosure();
   const { lists, addList } = useTodoContext();
 
   const handleCreateList = ({ name }: { name: string }) => {
     addList(name);
-    toggle();
+    createModal.close();
   };
 
   return (
@@ -27,7 +27,7 @@ export function ListNavBar() {
         <Group justify="space-between">
           <Title order={4}>Mis listas</Title>
           <ActionIcon
-            onClick={toggle}
+            onClick={createModal.open}
             variant="light"
             size="lg"
             aria-label="add-list"
@@ -47,8 +47,8 @@ export function ListNavBar() {
         ))}
       </AppShellSection>
       <CreateListModal
-        opened={createNew}
-        onClose={toggle}
+        opened={showCreateModal}
+        onClose={createModal.close}
         onCreate={handleCreateList}
       />
     </>
