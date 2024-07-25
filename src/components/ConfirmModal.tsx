@@ -5,6 +5,7 @@ export interface ConfirmModalProps {
   onClose: VoidFunction;
   onConfirm: VoidFunction;
   confirmLabel?: string;
+  title: string;
 }
 
 export function ConfirmModal({
@@ -12,9 +13,10 @@ export function ConfirmModal({
   onClose,
   onConfirm,
   confirmLabel = "Confirmar",
+  title,
 }: ConfirmModalProps) {
   return (
-    <Modal opened={opened} onClose={onClose} title="Crear lista">
+    <Modal opened={opened} onClose={onClose} title={title}>
       <Stack>
         <Group gap="md" justify="end" mt="md">
           <Button variant="light" onClick={onClose}>
