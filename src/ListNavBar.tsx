@@ -1,11 +1,10 @@
 import {
   ActionIcon,
   AppShellSection,
-  Button,
   Group,
   NavLink,
   ScrollArea,
-  Text,
+  Title,
 } from "@mantine/core";
 import { NavLink as NavLinkRouter } from "react-router-dom";
 import { useTodoContext } from "./useTodoContext";
@@ -20,9 +19,9 @@ export function ListNavBar() {
 
   return (
     <>
-      <AppShellSection mb="sm">
+      <AppShellSection mb="sm" p="sm">
         <Group justify="space-between">
-          <Text>Mis listas</Text>
+          <Title order={4}>Mis listas</Title>
           <ActionIcon
             onClick={handleCreateList}
             variant="light"
