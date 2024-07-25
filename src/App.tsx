@@ -23,7 +23,7 @@ export function App() {
           <Title order={1}>Todo List</Title>
         </Group>
       </AppShell.Header>
-      <AppShell.Navbar p="sm">
+      <AppShell.Navbar>
         <ListNavBar />
       </AppShell.Navbar>
       <AppShell.Main>
