@@ -6,8 +6,9 @@ import {
   Textarea,
   TextInput,
 } from "@mantine/core";
-import { FieldError, useForm } from "react-hook-form";
-import { Todo } from "./types/Todo";
+import { useForm } from "react-hook-form";
+import { Todo } from "../types/Todo";
+import { getErrorMessage } from "../utils/getErrorMessages";
 
 export interface TodoItemFormProps {
   onSubmit: (todoItem: Todo) => void;
@@ -27,18 +28,6 @@ export function TodoItemForm({ onSubmit, onCancel }: TodoItemFormProps) {
       description: "",
     },
   });
-
-  const getErrorMessage = (error: FieldError) => {
-    if (error.type === "minLength") {
-      return "El campo debe tener al menos 3 caracteres";
-    }
-    if (error.type === "required") {
-      return "El campo no puede estar en blanco";
-    }
-    if (error.type === "required") {
-      return "El campo supera los 256 caracteres permitidos";
-    }
-  };
 
   return (
     <Paper shadow="sm" p="lg" radius="lg">
