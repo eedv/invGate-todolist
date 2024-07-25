@@ -1,4 +1,4 @@
-import { Button, Group, rem, Stack, Text, Title } from "@mantine/core";
+import { Button, Group, Stack, Text, Title } from "@mantine/core";
 import { useState } from "react";
 import { TodoItem } from "./TodoItem";
 import { Todo } from "../types/Todo";

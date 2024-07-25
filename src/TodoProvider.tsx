@@ -3,6 +3,7 @@ import { TodoList } from "./types/TodoList";
 
 type TodoAction =
   | { type: "ADD_TODO"; listId: number; title: string }
+  | { type: "UPDATE_TODO"; listId: number; id: number; title: string }
   | { type: "TOGGLE_TODO"; listId: number; id: number }
   | { type: "DELETE_TODO"; listId: number; id: number }
   | { type: "ADD_LIST"; listName: string }
@@ -28,6 +29,17 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
                   completed: false,
                 },
               ],
+            }
+          : list
+      );
+    case "UPDATE_TODO":
+      return state.map((list) =>
+        list.id === action.listId
+          ? {
+              ...list,
+              todos: list.todos.map((todo) =>
+                todo.id === action.id ? { ...todo, title: action.title } : todo
+              ),
             }
           : list
       );
@@ -75,6 +87,7 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
 type TodoContextType = {
   lists: TodoState;
   addTodo: (listId: number, text: string) => void;
+  updateTodo: (listId: number, todoId: number, title: string) => void;
   toggleTodo: (listId: number, todoId: number) => void;
   deleteTodo: (listId: number, todoId: number) => void;
   addList: (listName: string) => void;
@@ -91,6 +104,10 @@ export function TodoProvider({ children }: { children: ReactNode }) {
 
   const addTodo = (listId: number, title: string) => {
     dispatch({ type: "ADD_TODO", listId, title });
+  };
+
+  const updateTodo = (listId: number, id: number, title: string) => {
+    dispatch({ type: "UPDATE_TODO", listId, id, title });
   };
 
   const toggleTodo = (listId: number, id: number) => {
@@ -118,6 +135,7 @@ export function TodoProvider({ children }: { children: ReactNode }) {
       value={{
         lists,
         addTodo,
+        updateTodo,
         toggleTodo,
         deleteTodo,
         addList,

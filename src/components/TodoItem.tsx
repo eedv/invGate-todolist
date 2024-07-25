@@ -1,5 +1,5 @@
 import { Checkbox, Group, Paper, Title, Tooltip } from "@mantine/core";
-import { Todo } from "./types/Todo";
+import { Todo } from "../types/Todo";
 import { ChangeEvent } from "react";
 
 export interface TodoItemProps {
