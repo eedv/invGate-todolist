@@ -1,18 +1,13 @@
 import { createContext, useReducer, ReactNode } from "react";
-import { Todo } from "./types/Todo";
+import { TodoList } from "./types/TodoList";
 
 type TodoAction =
   | { type: "ADD_TODO"; listId: number; title: string }
   | { type: "TOGGLE_TODO"; listId: number; id: number }
   | { type: "DELETE_TODO"; listId: number; id: number }
   | { type: "ADD_LIST"; listName: string }
+  | { type: "UPDATE_LIST"; listId: number; listName: string }
   | { type: "DELETE_LIST"; listId: number };
-
-type TodoList = {
-  id: number;
-  name: string;
-  todos: Todo[];
-};
 
 type TodoState = TodoList[];
 
@@ -63,6 +58,13 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
         ...state,
         { id: state.length + 1, name: action.listName, todos: [] },
       ];
+    case "UPDATE_LIST":
+      return state.map((list) => {
+        if (list.id === action.listId) {
+          return { ...list, name: action.listName };
+        }
+        return list;
+      });
     case "DELETE_LIST":
       return state.filter((list) => list.id !== action.listId);
     default:
@@ -76,6 +78,7 @@ type TodoContextType = {
   toggleTodo: (listId: number, todoId: number) => void;
   deleteTodo: (listId: number, todoId: number) => void;
   addList: (listName: string) => void;
+  updateList: (listId: number, listName: string) => void;
   deleteList: (listId: number) => void;
 };
 
@@ -102,13 +105,25 @@ export function TodoProvider({ children }: { children: ReactNode }) {
     dispatch({ type: "ADD_LIST", listName });
   };
 
+  const updateList = (listId: number, listName: string) => {
+    dispatch({ type: "UPDATE_LIST", listId, listName });
+  };
+
   const deleteList = (listId: number) => {
     dispatch({ type: "DELETE_LIST", listId });
   };
 
   return (
     <TodoContext.Provider
-      value={{ lists, addTodo, toggleTodo, deleteTodo, addList, deleteList }}
+      value={{
+        lists,
+        addTodo,
+        toggleTodo,
+        deleteTodo,
+        addList,
+        updateList,
+        deleteList,
+      }}
     >
       {children}
     </TodoContext.Provider>
