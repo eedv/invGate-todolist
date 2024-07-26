@@ -28,7 +28,7 @@ export const addList = (name: string): Promise<TodoList> => {
   return apiClient.post("/todo_lists", { name });
 };
 
-export const updateList = (listId: string, name: string): Promise<void> => {
+export const updateList = (listId: string, name: string): Promise<TodoList> => {
   return apiClient.put(`/todo_lists/${listId}`, { name });
 };
 

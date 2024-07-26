@@ -1,6 +1,6 @@
 import { TodoList } from "../../types/TodoList";
-import { useTodoContext } from "../../provider/useTodoContext";
 import { ConfirmModal } from "../ConfirmModal";
+import { useTodoListStore } from "../../store/useTodoListStore";
 
 export interface DeleteListModalProps {
   opened: boolean;
@@ -13,7 +13,7 @@ export function DeleteListModal({
   onClose,
   todoList,
 }: DeleteListModalProps) {
-  const { deleteList } = useTodoContext();
+  const { deleteList } = useTodoListStore();
   const handleDeletList = () => {
     deleteList(todoList.id);
     onClose();

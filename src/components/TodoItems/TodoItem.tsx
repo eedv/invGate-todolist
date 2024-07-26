@@ -10,8 +10,8 @@ import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { Todo } from "../../types/Todo";
 import { ConfirmModal } from "../ConfirmModal";
-import { useTodoContext } from "../../provider/useTodoContext";
 import { TodoItemForm } from "./TodoItemForm";
+import { useTodoStore } from "../../store/useTodoStore";
 
 export interface TodoItemProps {
   todoItem: Todo;
@@ -19,7 +19,7 @@ export interface TodoItemProps {
 }
 
 export function TodoItem({ todoItem, listId }: TodoItemProps) {
-  const { deleteTodo, updateTodo, toggleTodo } = useTodoContext();
+  const { deleteTodo, updateTodo, toggleTodo } = useTodoStore();
   const [showDeleteConfirm, deleteModal] = useDisclosure();
   const [showUpdateForm, updateForm] = useDisclosure();
 

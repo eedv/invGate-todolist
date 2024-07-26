@@ -1,33 +1,28 @@
-import { Button, Group, Stack, Text, Title } from "@mantine/core";
+import { Button, Group, Stack, Text } from "@mantine/core";
 import { useEffect, useState } from "react";
 import { TodoItem } from "../TodoItems/TodoItem";
 import { Todo } from "../../types/Todo";
 import { FilterControl, FilterControlProps } from "../FilterControl";
 import { TodoItemForm } from "../TodoItems/TodoItemForm";
 import { useParams } from "react-router-dom";
-import { useTodoContext } from "../../provider/useTodoContext";
-import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { useDisclosure } from "@mantine/hooks";
-import { UpdateListModal } from "./UpdateListModal";
-import { DeleteListModal } from "./DeleteListModal";
+import { useTodoStore } from "../../store/useTodoStore";
+import { ListHeader } from "./ListHeader";
 
 export function TodoList() {
   const { listId } = useParams();
-  const { lists, error, addTodo, fetchTodos } = useTodoContext();
-  const [showDeletModal, deleteModal] = useDisclosure();
-  const [showUpdateModal, updateModal] = useDisclosure();
+  const { todosByListId, fetchTodos, addTodo, error } = useTodoStore();
+
   const [showForm, setShowForm] = useState(false);
   const [filter, setFilter] =
     useState<FilterControlProps["value"]>("incomplete");
 
-  const list = lists.find((l) => l.id === listId);
+  const todos = listId ? todosByListId[listId] : null;
 
   useEffect(() => {
-    if (listId) {
+    if (listId && !todos) {
       fetchTodos(listId);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listId]);
+  }, [listId, fetchTodos, todos]);
 
   if (error)
     return (
@@ -35,10 +30,12 @@ export function TodoList() {
         {error}
       </Text>
     );
-  if (!list) return <Text>La lista seleccionada no existe</Text>;
+  if (!listId) return <Text>La lista seleccionada no existe</Text>;
 
   const handleCreateItem = (todo: Todo) => {
-    addTodo(list.id, todo);
+    if (listId) {
+      addTodo(listId, todo);
+    }
   };
 
   const handleShowForm = () => {
@@ -53,38 +50,21 @@ export function TodoList() {
     setFilter(value as FilterControlProps["value"]);
   };
 
-  const filteredList = list.todos
-    .filter((item) => {
+  const filteredList = todos
+    ?.filter((item) => {
       return (
         (filter === "completed" && item.completed) ||
         (filter === "incomplete" && !item.completed) ||
         filter === "all"
       );
     })
-    .map((item) => <TodoItem key={item.id} todoItem={item} listId={list.id} />);
+    .map((item) => (
+      <TodoItem key={item.id} todoItem={item} listId={item.todo_listId} />
+    ));
 
   return (
     <Stack>
-      <Group justify="space-between" preventGrowOverflow={false}>
-        <Title order={3} lineClamp={1}>
-          {list.name}
-        </Title>
-        <Group wrap="nowrap">
-          <Button
-            onClick={updateModal.open}
-            leftSection={<IconEdit size={20} />}
-          >
-            Editar lista
-          </Button>
-          <Button
-            onClick={deleteModal.open}
-            color="red"
-            leftSection={<IconTrash size={20} />}
-          >
-            Eliminar lista
-          </Button>
-        </Group>
-      </Group>
+      <ListHeader listId={listId} />
       <Group>
         <Button onClick={handleShowForm} disabled={showForm}>
           Agregar tarea
@@ -99,16 +79,6 @@ export function TodoList() {
           submitText="Crear"
         />
       )}
-      <DeleteListModal
-        opened={showDeletModal}
-        onClose={deleteModal.close}
-        todoList={list}
-      />
-      <UpdateListModal
-        opened={showUpdateModal}
-        onClose={updateModal.close}
-        todoList={list}
-      />
     </Stack>
   );
 }

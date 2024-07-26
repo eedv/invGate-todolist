@@ -11,12 +11,13 @@ import {
 import { useDisclosure } from "@mantine/hooks";
 import { IconPlus } from "@tabler/icons-react";
 import { NavLink as NavLinkRouter } from "react-router-dom";
-import { useTodoContext } from "../../provider/useTodoContext";
 import { CreateListModal } from "./CreateListModal";
+import { useTodoListStore } from "../../store/useTodoListStore";
 
 export function ListNavBar() {
   const [showCreateModal, createModal] = useDisclosure();
-  const { lists, initialized, loading, fetchLists, addList } = useTodoContext();
+  const { lists, initialized, loading, fetchLists, addList } =
+    useTodoListStore();
 
   useEffect(() => {
     if (!initialized && !loading) {
