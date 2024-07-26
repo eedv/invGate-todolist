@@ -1,26 +1,29 @@
 import { Modal } from "@mantine/core";
 import { TodoListForm } from "./TodoListForm";
 import { TodoList } from "../types/TodoList";
+import { useTodoContext } from "../useTodoContext";
 
 export interface UpdateListModalProps {
   opened: boolean;
   onClose: VoidFunction;
-  onUpdate: ({ name }: { name: string }) => void;
-  defaultValues?: { name: string };
   todoList: TodoList;
 }
 
 export function UpdateListModal({
   opened,
   onClose,
-  onUpdate,
   todoList,
 }: UpdateListModalProps) {
+  const { updateList } = useTodoContext();
+  const handleUpdateList = ({ name }: { name: string }) => {
+    updateList(todoList.id, name);
+    onClose();
+  };
   return (
     <Modal opened={opened} onClose={onClose} title="Actualizar lista">
       <TodoListForm
         onCancel={onClose}
-        onSubmit={onUpdate}
+        onSubmit={handleUpdateList}
         submitText="Actualizar"
         defaultValues={todoList}
       />

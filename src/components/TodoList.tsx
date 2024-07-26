@@ -7,13 +7,13 @@ import { TodoItemForm } from "./TodoItemForm";
 import { useParams } from "react-router-dom";
 import { useTodoContext } from "../useTodoContext";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { ConfirmModal } from "./ConfirmModal";
 import { useDisclosure } from "@mantine/hooks";
 import { UpdateListModal } from "./UpdateListModal";
+import { DeleteListModal } from "./DeleteListModal";
 
 export function TodoList() {
   const { listId } = useParams();
-  const { lists, deleteList, updateList, addTodo } = useTodoContext();
+  const { lists, addTodo } = useTodoContext();
   const [showDeletModal, deleteModal] = useDisclosure();
   const [showUpdateModal, updateModal] = useDisclosure();
   const [showForm, setShowForm] = useState(false);
@@ -38,15 +38,6 @@ export function TodoList() {
 
   const handleFilterChange = (value: string) => {
     setFilter(value as FilterControlProps["value"]);
-  };
-
-  const handleDeletList = () => {
-    deleteList(list.id);
-  };
-
-  const handleUpdateList = ({ name }: { name: string }) => {
-    updateList(list.id, name);
-    updateModal.close();
   };
 
   const filteredList = list.todos
@@ -95,16 +86,14 @@ export function TodoList() {
           submitText="Crear"
         />
       )}
-      <ConfirmModal
-        title="Eliminar lista?"
+      <DeleteListModal
         opened={showDeletModal}
         onClose={deleteModal.close}
-        onConfirm={handleDeletList}
+        todoList={list}
       />
       <UpdateListModal
         opened={showUpdateModal}
         onClose={updateModal.close}
-        onUpdate={handleUpdateList}
         todoList={list}
       />
     </Stack>
