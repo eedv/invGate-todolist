@@ -4,6 +4,7 @@ import {
   Group,
   NavLink,
   ScrollArea,
+  Skeleton,
   Title,
 } from "@mantine/core";
 import { NavLink as NavLinkRouter } from "react-router-dom";
@@ -28,6 +29,8 @@ export function ListNavBar() {
     createModal.close();
   };
 
+  const isFirstLoading = !initialized && loading;
+
   return (
     <>
       <AppShellSection mb="sm" p="sm">
@@ -44,14 +47,20 @@ export function ListNavBar() {
         </Group>
       </AppShellSection>
       <AppShellSection component={ScrollArea}>
-        {lists.map((list) => (
-          <NavLink
-            key={list.id}
-            component={NavLinkRouter}
-            to={`lists/${list.id}`}
-            label={list.name}
-          />
-        ))}
+        {isFirstLoading
+          ? Array(8)
+              .fill(0)
+              .map((_, index) => (
+                <Skeleton key={index} h={24} mb="md" animate={true} />
+              ))
+          : lists.map((list) => (
+              <NavLink
+                key={list.id}
+                component={NavLinkRouter}
+                to={`lists/${list.id}`}
+                label={list.name}
+              />
+            ))}
       </AppShellSection>
       <CreateListModal
         opened={showCreateModal}
