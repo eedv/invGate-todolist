@@ -1,5 +1,5 @@
 import { createContext, useReducer, ReactNode } from "react";
-import { TodoList, Todo } from "./types";
+import { TodoList, Todo } from "../types";
 import {
   fetchLists as fetchListsAPI,
   fetchTodos as fetchTodosAPI,
@@ -9,7 +9,7 @@ import {
   addList as addListAPI,
   updateList as updateListAPI,
   deleteList as deleteListAPI,
-} from "./services/todoService";
+} from "../services/todoService";
 
 type TodoAction =
   | { type: "ADD_TODO"; todo: Todo }

@@ -1,5 +1,5 @@
 import { TodoList } from "../../types/TodoList";
-import { useTodoContext } from "../../useTodoContext";
+import { useTodoContext } from "../../provider/useTodoContext";
 import { ConfirmModal } from "../ConfirmModal";
 
 export interface DeleteListModalProps {

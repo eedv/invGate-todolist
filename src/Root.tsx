@@ -1,5 +1,5 @@
 import { MantineProvider } from "@mantine/core";
-import { TodoProvider } from "./TodoProvider";
+import { TodoProvider } from "./provider/TodoProvider";
 import { App } from "./App";
 
 export function Root() {

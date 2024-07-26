@@ -5,7 +5,7 @@ import { Todo } from "../../types/Todo";
 import { FilterControl, FilterControlProps } from "../FilterControl";
 import { TodoItemForm } from "../TodoItems/TodoItemForm";
 import { useParams } from "react-router-dom";
-import { useTodoContext } from "../../useTodoContext";
+import { useTodoContext } from "../../provider/useTodoContext";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { UpdateListModal } from "./UpdateListModal";

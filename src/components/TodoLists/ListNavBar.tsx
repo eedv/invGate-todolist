@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import {
   ActionIcon,
   AppShellSection,
@@ -7,12 +8,11 @@ import {
   Skeleton,
   Title,
 } from "@mantine/core";
-import { NavLink as NavLinkRouter } from "react-router-dom";
-import { useTodoContext } from "../../useTodoContext";
-import { IconPlus } from "@tabler/icons-react";
-import { CreateListModal } from "./CreateListModal";
 import { useDisclosure } from "@mantine/hooks";
-import { useEffect } from "react";
+import { IconPlus } from "@tabler/icons-react";
+import { NavLink as NavLinkRouter } from "react-router-dom";
+import { useTodoContext } from "../../provider/useTodoContext";
+import { CreateListModal } from "./CreateListModal";
 
 export function ListNavBar() {
   const [showCreateModal, createModal] = useDisclosure();

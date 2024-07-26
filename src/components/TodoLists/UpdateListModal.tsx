@@ -1,7 +1,7 @@
 import { Modal } from "@mantine/core";
 import { TodoListForm } from "./TodoListForm";
 import { TodoList } from "../../types/TodoList";
-import { useTodoContext } from "../../useTodoContext";
+import { useTodoContext } from "../../provider/useTodoContext";
 
 export interface UpdateListModalProps {
   opened: boolean;
