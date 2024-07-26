@@ -5,7 +5,6 @@ import {
   fetchTodos as fetchTodosAPI,
   addTodo as addTodoAPI,
   updateTodo as updateTodoAPI,
-  toggleTodo as toggleTodoAPI,
   deleteTodo as deleteTodoAPI,
   addList as addListAPI,
   updateList as updateListAPI,
@@ -13,13 +12,11 @@ import {
 } from "./services/todoService";
 
 type TodoAction =
-  | { type: "ADD_TODO"; listId: string; todo: Todo; description?: string }
+  | { type: "ADD_TODO"; todo: Todo }
   | {
       type: "UPDATE_TODO";
       listId: string;
-      todoId: string;
-      title: string;
-      description?: string;
+      todo: Todo;
     }
   | { type: "TOGGLE_TODO"; listId: string; todoId: string }
   | { type: "DELETE_TODO"; listId: string; todoId: string }
@@ -50,7 +47,7 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
       return {
         ...state,
         lists: state.lists.map((list) =>
-          list.id === action.listId
+          list.id === action.todo.todo_listId
             ? {
                 ...list,
                 todos: [...list.todos, action.todo],
@@ -66,13 +63,7 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
             ? {
                 ...list,
                 todos: list.todos.map((todo) =>
-                  todo.id === action.todoId
-                    ? {
-                        ...todo,
-                        title: action.title,
-                        description: action.description,
-                      }
-                    : todo
+                  todo.id === action.todo.id ? { ...action.todo } : todo
                 ),
               }
             : list
@@ -161,14 +152,9 @@ type TodoContextType = {
   initialized: boolean;
   fetchLists: () => void;
   fetchTodos: (listId: string) => void;
-  addTodo: (listId: string, title: string, description?: string) => void;
-  updateTodo: (
-    listId: string,
-    todoId: string,
-    title: string,
-    description?: string
-  ) => void;
-  toggleTodo: (listId: string, todoId: string) => void;
+  addTodo: (listId: string, todo: Todo) => void;
+  updateTodo: (listId: string, todo: Todo) => void;
+  toggleTodo: (listId: string, todo: Todo) => void;
   deleteTodo: (listId: string, todoId: string) => void;
   addList: (listName: string) => void;
   updateList: (listId: string, listName: string) => void;
@@ -211,27 +197,25 @@ export function TodoProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "SET_TODOS", listId, todos });
     });
 
-  const addTodo = (listId: string, title: string, description?: string) =>
+  const addTodo = (listId: string, todo: Todo) =>
     handleRequest(async () => {
-      const todo = await addTodoAPI(listId, title, description);
-      dispatch({ type: "ADD_TODO", listId, todo, description });
+      const newTodo = await addTodoAPI(listId, todo);
+      dispatch({ type: "ADD_TODO", todo: newTodo });
     });
 
-  const updateTodo = (
-    listId: string,
-    todoId: string,
-    title: string,
-    description?: string
-  ) =>
+  const updateTodo = (listId: string, todo: Todo) =>
     handleRequest(async () => {
-      await updateTodoAPI(listId, todoId, title, description);
-      dispatch({ type: "UPDATE_TODO", listId, todoId, title, description });
+      const updatedTodo = await updateTodoAPI(listId, todo);
+      dispatch({ type: "UPDATE_TODO", listId, todo: updatedTodo });
     });
 
-  const toggleTodo = (listId: string, todoId: string) =>
+  const toggleTodo = (listId: string, todo: Todo) =>
     handleRequest(async () => {
-      await toggleTodoAPI(listId, todoId);
-      dispatch({ type: "TOGGLE_TODO", listId, todoId });
+      const updatedTodo = await updateTodoAPI(listId, {
+        ...todo,
+        completed: !todo.completed,
+      });
+      dispatch({ type: "UPDATE_TODO", listId, todo: updatedTodo });
     });
 
   const deleteTodo = (listId: string, todoId: string) =>

@@ -12,30 +12,12 @@ export const fetchTodos = (listId: string): Promise<Todo[]> => {
   return apiClient.get(`/todo_lists/${listId}/todos`);
 };
 
-export const addTodo = (
-  listId: string,
-  title: string,
-  description?: string
-): Promise<Todo> => {
-  return apiClient.post(`/todo_lists/${listId}/todos`, { title, description });
+export const addTodo = (listId: string, data: Todo): Promise<Todo> => {
+  return apiClient.post(`/todo_lists/${listId}/todos`, data);
 };
 
-export const updateTodo = (
-  listId: string,
-  todoId: string,
-  title: string,
-  description?: string
-): Promise<void> => {
-  return apiClient.put(`/todo_lists/${listId}/todos/${todoId}`, {
-    title,
-    description,
-  });
-};
-
-export const toggleTodo = (listId: string, todoId: string): Promise<void> => {
-  return apiClient.put(`/todo_lists/${listId}/todos/${todoId}`, {
-    completed: false,
-  });
+export const updateTodo = (listId: string, todo: Todo): Promise<Todo> => {
+  return apiClient.put(`/todo_lists/${listId}/todos/${todo.id}`, todo);
 };
 
 export const deleteTodo = (listId: string, todoId: string): Promise<void> => {

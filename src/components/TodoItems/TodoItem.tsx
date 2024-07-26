@@ -23,8 +23,8 @@ export function TodoItem({ todoItem, listId }: TodoItemProps) {
   const [showDeleteConfirm, deleteModal] = useDisclosure();
   const [showUpdateForm, updateForm] = useDisclosure();
 
-  const handleUpdate = ({ title, description }: Todo) => {
-    updateTodo(listId, todoItem.id, title, description);
+  const handleUpdate = (todo: Todo) => {
+    updateTodo(listId, todo);
     updateForm.close();
   };
 
@@ -53,7 +53,7 @@ export function TodoItem({ todoItem, listId }: TodoItemProps) {
             <Checkbox
               checked={todoItem.completed}
               size="md"
-              onChange={() => toggleTodo(listId, todoItem.id)}
+              onChange={() => toggleTodo(listId, todoItem)}
             />
           </Tooltip>
 

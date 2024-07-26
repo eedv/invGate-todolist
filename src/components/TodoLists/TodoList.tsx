@@ -37,8 +37,8 @@ export function TodoList() {
     );
   if (!list) return <Text>La lista seleccionada no existe</Text>;
 
-  const handleCreateItem = ({ title, description }: Todo) => {
-    addTodo(list.id, title, description);
+  const handleCreateItem = (todo: Todo) => {
+    addTodo(list.id, todo);
   };
 
   const handleShowForm = () => {
