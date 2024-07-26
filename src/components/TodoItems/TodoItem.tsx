@@ -28,6 +28,11 @@ export function TodoItem({ todoItem, listId }: TodoItemProps) {
     updateForm.close();
   };
 
+  const handleDelete = () => {
+    deleteTodo(listId, todoItem.id);
+    deleteModal.close();
+  };
+
   if (showUpdateForm) {
     return (
       <TodoItemForm
@@ -71,7 +76,7 @@ export function TodoItem({ todoItem, listId }: TodoItemProps) {
           <ConfirmModal
             opened={showDeleteConfirm}
             onClose={deleteModal.close}
-            onConfirm={() => deleteTodo(listId, todoItem.id)}
+            onConfirm={handleDelete}
             confirmLabel="Eliminar"
             title="Eliminar tarea?"
           />
