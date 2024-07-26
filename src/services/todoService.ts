@@ -12,16 +12,24 @@ export const fetchTodos = (listId: string): Promise<Todo[]> => {
   return apiClient.get(`/todo_lists/${listId}/todos`);
 };
 
-export const addTodo = (listId: string, title: string): Promise<Todo> => {
-  return apiClient.post(`/todo_lists/${listId}/todos`, { title });
+export const addTodo = (
+  listId: string,
+  title: string,
+  description?: string
+): Promise<Todo> => {
+  return apiClient.post(`/todo_lists/${listId}/todos`, { title, description });
 };
 
 export const updateTodo = (
   listId: string,
   todoId: string,
-  title: string
+  title: string,
+  description?: string
 ): Promise<void> => {
-  return apiClient.put(`/todo_lists/${listId}/todos/${todoId}`, { title });
+  return apiClient.put(`/todo_lists/${listId}/todos/${todoId}`, {
+    title,
+    description,
+  });
 };
 
 export const toggleTodo = (listId: string, todoId: string): Promise<void> => {

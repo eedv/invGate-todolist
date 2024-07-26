@@ -23,8 +23,8 @@ export function TodoItem({ todoItem, listId }: TodoItemProps) {
   const [showDeleteConfirm, deleteModal] = useDisclosure();
   const [showUpdateForm, updateForm] = useDisclosure();
 
-  const handleUpdate = (todoValues: Todo) => {
-    updateTodo(listId, todoItem.id, todoValues.title);
+  const handleUpdate = ({ title, description }: Todo) => {
+    updateTodo(listId, todoItem.id, title, description);
     updateForm.close();
   };
 

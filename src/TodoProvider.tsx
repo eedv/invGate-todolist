@@ -67,7 +67,11 @@ const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
                 ...list,
                 todos: list.todos.map((todo) =>
                   todo.id === action.todoId
-                    ? { ...todo, title: action.title }
+                    ? {
+                        ...todo,
+                        title: action.title,
+                        description: action.description,
+                      }
                     : todo
                 ),
               }
@@ -207,16 +211,21 @@ export function TodoProvider({ children }: { children: ReactNode }) {
       dispatch({ type: "SET_TODOS", listId, todos });
     });
 
-  const addTodo = (listId: string, title: string) =>
+  const addTodo = (listId: string, title: string, description?: string) =>
     handleRequest(async () => {
-      const todo = await addTodoAPI(listId, title);
-      dispatch({ type: "ADD_TODO", listId, todo });
+      const todo = await addTodoAPI(listId, title, description);
+      dispatch({ type: "ADD_TODO", listId, todo, description });
     });
 
-  const updateTodo = (listId: string, todoId: string, title: string) =>
+  const updateTodo = (
+    listId: string,
+    todoId: string,
+    title: string,
+    description?: string
+  ) =>
     handleRequest(async () => {
-      await updateTodoAPI(listId, todoId, title);
-      dispatch({ type: "UPDATE_TODO", listId, todoId, title });
+      await updateTodoAPI(listId, todoId, title, description);
+      dispatch({ type: "UPDATE_TODO", listId, todoId, title, description });
     });
 
   const toggleTodo = (listId: string, todoId: string) =>
