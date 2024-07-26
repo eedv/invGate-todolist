@@ -1,6 +1,6 @@
 import { Button, Group, Stack, TextInput } from "@mantine/core";
 import { useForm } from "react-hook-form";
-import { getErrorMessage } from "../utils/getErrorMessages";
+import { getErrorMessage } from "../../utils/getErrorMessages";
 
 export interface CreateListModalProps {
   onCancel: VoidFunction;

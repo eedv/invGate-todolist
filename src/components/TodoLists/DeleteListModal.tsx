@@ -1,6 +1,6 @@
-import { TodoList } from "../types/TodoList";
-import { useTodoContext } from "../useTodoContext";
-import { ConfirmModal } from "./ConfirmModal";
+import { TodoList } from "../../types/TodoList";
+import { useTodoContext } from "../../useTodoContext";
+import { ConfirmModal } from "../ConfirmModal";
 
 export interface DeleteListModalProps {
   opened: boolean;

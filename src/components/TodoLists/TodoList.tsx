@@ -1,11 +1,11 @@
 import { Button, Group, Stack, Text, Title } from "@mantine/core";
 import { useState } from "react";
-import { TodoItem } from "./TodoItem";
-import { Todo } from "../types/Todo";
-import { FilterControl, FilterControlProps } from "./FilterControl";
-import { TodoItemForm } from "./TodoItemForm";
+import { TodoItem } from "../TodoItems/TodoItem";
+import { Todo } from "../../types/Todo";
+import { FilterControl, FilterControlProps } from "../FilterControl";
+import { TodoItemForm } from "../TodoItems/TodoItemForm";
 import { useParams } from "react-router-dom";
-import { useTodoContext } from "../useTodoContext";
+import { useTodoContext } from "../../useTodoContext";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
 import { useDisclosure } from "@mantine/hooks";
 import { UpdateListModal } from "./UpdateListModal";

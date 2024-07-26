@@ -2,7 +2,7 @@ import "@mantine/core/styles.css";
 import { AppShell, Burger, Group, Title } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { Outlet } from "react-router-dom";
-import { ListNavBar } from "./components/ListNavBar";
+import { ListNavBar } from "./components/TodoLists/ListNavBar";
 
 export function App() {
   const [opened, { toggle }] = useDisclosure();

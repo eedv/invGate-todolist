@@ -6,10 +6,10 @@ import {
   Title,
   Tooltip,
 } from "@mantine/core";
-import { Todo } from "../types/Todo";
+import { Todo } from "../../types/Todo";
 import { IconEdit, IconTrash } from "@tabler/icons-react";
-import { ConfirmModal } from "./ConfirmModal";
-import { useTodoContext } from "../useTodoContext";
+import { ConfirmModal } from "../ConfirmModal";
+import { useTodoContext } from "../../useTodoContext";
 import { useDisclosure } from "@mantine/hooks";
 import { TodoItemForm } from "./TodoItemForm";
 

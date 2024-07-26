@@ -7,8 +7,8 @@ import {
   TextInput,
 } from "@mantine/core";
 import { useForm } from "react-hook-form";
-import { Todo } from "../types/Todo";
-import { getErrorMessage } from "../utils/getErrorMessages";
+import { Todo } from "../../types/Todo";
+import { getErrorMessage } from "../../utils/getErrorMessages";
 import { useEffect } from "react";
 
 export interface TodoItemFormProps {

@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { TodoList } from "./components/TodoList.tsx";
+import { TodoList } from "./components/TodoLists/TodoList.tsx";
 import { Root } from "./Root.tsx";
 
 const router = createBrowserRouter([
