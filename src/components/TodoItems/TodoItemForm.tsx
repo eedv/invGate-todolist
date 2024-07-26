@@ -19,7 +19,7 @@ export interface TodoItemFormProps {
 }
 
 const defaultItem = {
-  id: 1,
+  id: "1",
   completed: false,
   title: "nombre",
   description: "",

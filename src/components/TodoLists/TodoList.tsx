@@ -1,5 +1,5 @@
 import { Button, Group, Stack, Text, Title } from "@mantine/core";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TodoItem } from "../TodoItems/TodoItem";
 import { Todo } from "../../types/Todo";
 import { FilterControl, FilterControlProps } from "../FilterControl";
@@ -13,15 +13,28 @@ import { DeleteListModal } from "./DeleteListModal";
 
 export function TodoList() {
   const { listId } = useParams();
-  const { lists, addTodo } = useTodoContext();
+  const { lists, error, addTodo, fetchTodos } = useTodoContext();
   const [showDeletModal, deleteModal] = useDisclosure();
   const [showUpdateModal, updateModal] = useDisclosure();
   const [showForm, setShowForm] = useState(false);
   const [filter, setFilter] =
     useState<FilterControlProps["value"]>("incomplete");
 
-  const list = lists.find((l) => l.id === Number(listId));
+  const list = lists.find((l) => l.id === listId);
 
+  useEffect(() => {
+    if (listId) {
+      fetchTodos(listId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [listId]);
+
+  if (error)
+    return (
+      <Text c="red" fw="bold">
+        {error}
+      </Text>
+    );
   if (!list) return <Text>La lista seleccionada no existe</Text>;
 
   const handleCreateItem = (itemValues: Todo) => {

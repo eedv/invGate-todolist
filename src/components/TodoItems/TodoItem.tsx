@@ -15,7 +15,7 @@ import { TodoItemForm } from "./TodoItemForm";
 
 export interface TodoItemProps {
   todoItem: Todo;
-  listId: number;
+  listId: string;
 }
 
 export function TodoItem({ todoItem, listId }: TodoItemProps) {

@@ -11,10 +11,17 @@ import { useTodoContext } from "../../useTodoContext";
 import { IconPlus } from "@tabler/icons-react";
 import { CreateListModal } from "./CreateListModal";
 import { useDisclosure } from "@mantine/hooks";
+import { useEffect } from "react";
 
 export function ListNavBar() {
   const [showCreateModal, createModal] = useDisclosure();
-  const { lists, addList } = useTodoContext();
+  const { lists, initialized, loading, fetchLists, addList } = useTodoContext();
+
+  useEffect(() => {
+    if (!initialized && !loading) {
+      fetchLists();
+    }
+  }, [fetchLists, initialized, loading]);
 
   const handleCreateList = ({ name }: { name: string }) => {
     addList(name);

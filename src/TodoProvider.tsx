@@ -1,98 +1,174 @@
 import { createContext, useReducer, ReactNode } from "react";
-import { TodoList } from "./types/TodoList";
+import { TodoList, Todo } from "./types";
+import {
+  fetchLists as fetchListsAPI,
+  fetchTodos as fetchTodosAPI,
+  addTodo as addTodoAPI,
+  updateTodo as updateTodoAPI,
+  toggleTodo as toggleTodoAPI,
+  deleteTodo as deleteTodoAPI,
+  addList as addListAPI,
+  updateList as updateListAPI,
+  deleteList as deleteListAPI,
+} from "./services/todoService";
 
 type TodoAction =
-  | { type: "ADD_TODO"; listId: number; title: string }
-  | { type: "UPDATE_TODO"; listId: number; id: number; title: string }
-  | { type: "TOGGLE_TODO"; listId: number; id: number }
-  | { type: "DELETE_TODO"; listId: number; id: number }
-  | { type: "ADD_LIST"; listName: string }
-  | { type: "UPDATE_LIST"; listId: number; listName: string }
-  | { type: "DELETE_LIST"; listId: number };
+  | { type: "ADD_TODO"; listId: string; todo: Todo; description?: string }
+  | {
+      type: "UPDATE_TODO";
+      listId: string;
+      todoId: string;
+      title: string;
+      description?: string;
+    }
+  | { type: "TOGGLE_TODO"; listId: string; todoId: string }
+  | { type: "DELETE_TODO"; listId: string; todoId: string }
+  | { type: "ADD_LIST"; list: TodoList }
+  | { type: "UPDATE_LIST"; listId: string; listName: string }
+  | { type: "DELETE_LIST"; listId: string }
+  | { type: "SET_LISTS"; lists: TodoList[] }
+  | { type: "SET_TODOS"; listId: string; todos: Todo[] }
+  | { type: "SET_LOADING"; loading: boolean }
+  | { type: "SET_ERROR"; error: string | null };
 
-type TodoState = TodoList[];
+type TodoState = {
+  lists: TodoList[];
+  loading: boolean;
+  error: string | null;
+  initialized: boolean;
+};
 
-const initialLists: TodoState = [];
-
+const initialState: TodoState = {
+  lists: [],
+  loading: false,
+  error: null,
+  initialized: false,
+};
 const todoReducer = (state: TodoState, action: TodoAction): TodoState => {
   switch (action.type) {
     case "ADD_TODO":
-      return state.map((list) =>
-        list.id === action.listId
-          ? {
-              ...list,
-              todos: [
-                ...list.todos,
-                {
-                  id: list.todos.length + 1,
-                  title: action.title,
-                  completed: false,
-                },
-              ],
-            }
-          : list
-      );
-    case "UPDATE_TODO":
-      return state.map((list) =>
-        list.id === action.listId
-          ? {
-              ...list,
-              todos: list.todos.map((todo) =>
-                todo.id === action.id ? { ...todo, title: action.title } : todo
-              ),
-            }
-          : list
-      );
-    case "TOGGLE_TODO":
-      return state.map((list) =>
-        list.id === action.listId
-          ? {
-              ...list,
-              todos: list.todos.map((todo) =>
-                todo.id === action.id
-                  ? { ...todo, completed: !todo.completed }
-                  : todo
-              ),
-            }
-          : list
-      );
-    case "DELETE_TODO":
-      return state.map((list) =>
-        list.id === action.listId
-          ? {
-              ...list,
-              todos: list.todos.filter((todo) => todo.id !== action.id),
-            }
-          : list
-      );
-    case "ADD_LIST":
-      return [
+      return {
         ...state,
-        { id: state.length + 1, name: action.listName, todos: [] },
-      ];
+        lists: state.lists.map((list) =>
+          list.id === action.listId
+            ? {
+                ...list,
+                todos: [...list.todos, action.todo],
+              }
+            : list
+        ),
+      };
+    case "UPDATE_TODO":
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === action.listId
+            ? {
+                ...list,
+                todos: list.todos.map((todo) =>
+                  todo.id === action.todoId
+                    ? { ...todo, title: action.title }
+                    : todo
+                ),
+              }
+            : list
+        ),
+      };
+    case "TOGGLE_TODO":
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === action.listId
+            ? {
+                ...list,
+                todos: list.todos.map((todo) =>
+                  todo.id === action.todoId
+                    ? { ...todo, completed: !todo.completed }
+                    : todo
+                ),
+              }
+            : list
+        ),
+      };
+    case "DELETE_TODO":
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === action.listId
+            ? {
+                ...list,
+                todos: list.todos.filter((todo) => todo.id !== action.todoId),
+              }
+            : list
+        ),
+      };
+    case "ADD_LIST":
+      return {
+        ...state,
+        lists: [...state.lists, action.list],
+      };
     case "UPDATE_LIST":
-      return state.map((list) => {
-        if (list.id === action.listId) {
-          return { ...list, name: action.listName };
-        }
-        return list;
-      });
+      return {
+        ...state,
+        lists: state.lists.map((list) => {
+          if (list.id === action.listId) {
+            return { ...list, name: action.listName };
+          }
+          return list;
+        }),
+      };
     case "DELETE_LIST":
-      return state.filter((list) => list.id !== action.listId);
+      return {
+        ...state,
+        lists: state.lists.filter((list) => list.id !== action.listId),
+      };
+    case "SET_LISTS":
+      return {
+        ...state,
+        lists: action.lists,
+        initialized: true,
+      };
+    case "SET_TODOS":
+      return {
+        ...state,
+        lists: state.lists.map((list) =>
+          list.id === action.listId ? { ...list, todos: action.todos } : list
+        ),
+      };
+    case "SET_LOADING":
+      return {
+        ...state,
+        error: null,
+        loading: action.loading,
+      };
+    case "SET_ERROR":
+      return {
+        ...state,
+        error: action.error,
+      };
     default:
       return state;
   }
 };
-
 type TodoContextType = {
-  lists: TodoState;
-  addTodo: (listId: number, text: string) => void;
-  updateTodo: (listId: number, todoId: number, title: string) => void;
-  toggleTodo: (listId: number, todoId: number) => void;
-  deleteTodo: (listId: number, todoId: number) => void;
+  lists: TodoState["lists"];
+  loading: boolean;
+  error: string | null;
+  initialized: boolean;
+  fetchLists: () => void;
+  fetchTodos: (listId: string) => void;
+  addTodo: (listId: string, title: string, description?: string) => void;
+  updateTodo: (
+    listId: string,
+    todoId: string,
+    title: string,
+    description?: string
+  ) => void;
+  toggleTodo: (listId: string, todoId: string) => void;
+  deleteTodo: (listId: string, todoId: string) => void;
   addList: (listName: string) => void;
-  updateList: (listId: number, listName: string) => void;
-  deleteList: (listId: number) => void;
+  updateList: (listId: string, listName: string) => void;
+  deleteList: (listId: string) => void;
 };
 
 export const TodoContext = createContext<TodoContextType | undefined>(
@@ -100,40 +176,88 @@ export const TodoContext = createContext<TodoContextType | undefined>(
 );
 
 export function TodoProvider({ children }: { children: ReactNode }) {
-  const [lists, dispatch] = useReducer(todoReducer, initialLists);
+  const [state, dispatch] = useReducer(todoReducer, initialState);
 
-  const addTodo = (listId: number, title: string) => {
-    dispatch({ type: "ADD_TODO", listId, title });
+  const setLoading = (loading: boolean) =>
+    dispatch({ type: "SET_LOADING", loading });
+  const setError = (error: string | null) =>
+    dispatch({ type: "SET_ERROR", error });
+
+  const handleRequest = async (request: () => Promise<void>) => {
+    setLoading(true);
+    try {
+      await request();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      setError(error.message ? error.message : "Error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const updateTodo = (listId: number, id: number, title: string) => {
-    dispatch({ type: "UPDATE_TODO", listId, id, title });
-  };
+  const fetchLists = () =>
+    handleRequest(async () => {
+      const lists = await fetchListsAPI();
+      dispatch({ type: "SET_LISTS", lists });
+    });
 
-  const toggleTodo = (listId: number, id: number) => {
-    dispatch({ type: "TOGGLE_TODO", listId, id });
-  };
+  const fetchTodos = (listId: string) =>
+    handleRequest(async () => {
+      const todos = await fetchTodosAPI(listId);
+      dispatch({ type: "SET_TODOS", listId, todos });
+    });
 
-  const deleteTodo = (listId: number, id: number) => {
-    dispatch({ type: "DELETE_TODO", listId, id });
-  };
+  const addTodo = (listId: string, title: string) =>
+    handleRequest(async () => {
+      const todo = await addTodoAPI(listId, title);
+      dispatch({ type: "ADD_TODO", listId, todo });
+    });
 
-  const addList = (listName: string) => {
-    dispatch({ type: "ADD_LIST", listName });
-  };
+  const updateTodo = (listId: string, todoId: string, title: string) =>
+    handleRequest(async () => {
+      await updateTodoAPI(listId, todoId, title);
+      dispatch({ type: "UPDATE_TODO", listId, todoId, title });
+    });
 
-  const updateList = (listId: number, listName: string) => {
-    dispatch({ type: "UPDATE_LIST", listId, listName });
-  };
+  const toggleTodo = (listId: string, todoId: string) =>
+    handleRequest(async () => {
+      await toggleTodoAPI(listId, todoId);
+      dispatch({ type: "TOGGLE_TODO", listId, todoId });
+    });
 
-  const deleteList = (listId: number) => {
-    dispatch({ type: "DELETE_LIST", listId });
-  };
+  const deleteTodo = (listId: string, todoId: string) =>
+    handleRequest(async () => {
+      await deleteTodoAPI(listId, todoId);
+      dispatch({ type: "DELETE_TODO", listId, todoId });
+    });
+
+  const addList = (listName: string) =>
+    handleRequest(async () => {
+      const list = await addListAPI(listName);
+      dispatch({ type: "ADD_LIST", list });
+    });
+
+  const updateList = (listId: string, listName: string) =>
+    handleRequest(async () => {
+      await updateListAPI(listId, listName);
+      dispatch({ type: "UPDATE_LIST", listId, listName });
+    });
+
+  const deleteList = (listId: string) =>
+    handleRequest(async () => {
+      await deleteListAPI(listId);
+      dispatch({ type: "DELETE_LIST", listId });
+    });
 
   return (
     <TodoContext.Provider
       value={{
-        lists,
+        lists: state.lists,
+        loading: state.loading,
+        initialized: state.initialized,
+        error: state.error,
+        fetchLists,
+        fetchTodos,
         addTodo,
         updateTodo,
         toggleTodo,
